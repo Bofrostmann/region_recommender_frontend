@@ -1,0 +1,21 @@
+.App {
+    text-align: center;
+}
+.App-header {
+    background-color: #222;
+    padding: 1em;
+    color: white;
+}
+
+.App-title {
+    font-size: 1.5em;
+    margin: 0;
+}
+
+.App-intro {
+    font-size: large;
+}
+
+#region_map {
+    height: 500px;
+}
