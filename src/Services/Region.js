@@ -10,14 +10,16 @@ export class Region {
     }
 
     getLeafRegions() {
+        let ret_object = {};
         if (this.sub_regions) {
-            let regions = [];
+            let regions = {};
             for (let i = 0; i < this.sub_regions.length; i++) {
-                regions = regions.concat(this.sub_regions[i].getLeafRegions());
+                regions = Object.assign(regions, this.sub_regions[i].getLeafRegions());
             }
             return regions;
         } else {
-            return this;
+            ret_object[this.u_name] = this;
+            return ret_object;
         }
     };
 
@@ -42,7 +44,7 @@ export class Region {
     }
 
     findParentAtZoomLevel (zoom) {
-        if (this.max_zoom_level < zoom) {
+        if (!this.parent || zoom > this.parent.max_zoom_level) {
             return this;
         } else {
             return this.parent.findParentAtZoomLevel(zoom);

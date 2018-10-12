@@ -1,21 +1,29 @@
-.App {
-    text-align: center;
-}
-.App-header {
+.header {
     background-color: #222;
     padding: 1em;
     color: white;
-}
-
-.App-title {
     font-size: 1.5em;
-    margin: 0;
+    text-align: center;
+}
+.layout {
+    display: flex;
+    width: 95vw;
 }
 
-.App-intro {
-    font-size: large;
+.layout > .nav {
+    min-width: 15vw;
+    padding: 1em 2em;
+    margin: 1em 0;
 }
 
-#region_map {
-    height: 500px;
+.layout > .main {
+    padding: 0 1em;
+    width: 85vw;
+}
+
+.use_box_shadow {
+    border-radius: 5px;
+    padding: 1em;
+    margin: 1em;
+    box-shadow: -5px 5px 20px 0 rgba(0,0,0,0.5);
 }

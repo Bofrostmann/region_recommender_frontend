@@ -1,0 +1,28 @@
+.data_page {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: white;
+}
+
+.data_group {
+    display: flex;
+    flex-wrap: wrap;
+    flex-basis: 50%;
+    padding: 1em;
+    justify-content: space-between;
+}
+
+.data_group.standard,
+.buttons{
+    flex-basis: 100%;
+}
+
+.data_group > * {
+    flex-grow: 1;
+    flex-basis: 20%;
+}
+
+#region_map {
+    height: 512px;
+    width: 100%
+}

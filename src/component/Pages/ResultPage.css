@@ -1,0 +1,5 @@
+.result_page {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
