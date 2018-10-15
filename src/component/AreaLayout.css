@@ -1,11 +1,15 @@
 .header {
-    background-color: #222;
-    padding: 1em;
-    color: white;
-    font-size: 1.5em;
+    box-shadow: -5px 5px 30px 0 darkgray;
+    z-index: 10000;
+    background-color: #d9edf7;
+    padding: 0.5em;
+    font-size: 2em;
     text-align: center;
+    position: fixed;
+    width: 100vw;
 }
 .layout {
+    padding-top: 6em;
     display: flex;
     width: 95vw;
 }

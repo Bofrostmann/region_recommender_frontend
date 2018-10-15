@@ -11,7 +11,7 @@ class SliderInput extends Component {
     constructor(props) {
         super(props);
         this.state= {
-            value: 0
+            value: this.props.value
         };
         this.onSliderChange = this.onSliderChange.bind(this);
     };
@@ -35,10 +35,12 @@ class SliderInput extends Component {
 SliderInput.propTypes = {
     label: PropTypes.string,
     name: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    value: PropTypes.number
 };
 
 SliderInput.defaultProps = {
+    value: 0
 };
 
 export default SliderInput;

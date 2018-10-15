@@ -6,10 +6,11 @@ import React, {Component, createRef} from 'react';
 import {Map, TileLayer, GeoJSON} from "react-leaflet";
 import PropTypes from 'prop-types';
 
-import {Region} from '../Services/Region';
-
-import REGION_GEOMETRY from '../data/regionGeometry';
-import REGIONS from '../data/regions';
+import {Region} from '../../../Services/Region';
+import REGION_GEOMETRY from '../../../data/regionGeometry';
+import REGIONS from '../../../data/regions';
+import InputWrapper from "../InputWrapper";
+import "./RegionMap.css"
 
 
 class RegionMap extends Component {
@@ -22,6 +23,8 @@ class RegionMap extends Component {
         this.mapRef = createRef();
         this.target_hovering_over = null;
         this.selected_regions = Object.values(this.all_leaf_regions).map(element => (element.u_name));
+
+        this.state.toggle_all = this.selected_regions.length === Object.values(this.all_leaf_regions).length;
 
         this.mouseLeaveAtZoom = this.mouseLeaveAtZoom.bind(this);
         this.onZoomLevelChange = this.onZoomLevelChange.bind(this);
@@ -54,11 +57,10 @@ class RegionMap extends Component {
         });
     };
 
-    onLayerClick(event) {
+    handleLayerClick = (target_region) => {
         // if any layer is set selected, unselect all layers of the layergroup
         // otherwise set all layers selected
-        const target_region = this.all_leaf_regions[event.target.feature.properties.u_name].findParentAtZoomLevel(this.zoom),
-            leaf_regions = Object.values(target_region.getLeafRegions()),
+        const leaf_regions = Object.values(target_region.getLeafRegions()),
             set_layer_active = !leaf_regions.some(region => {
                 return region.layer.feature.is_selected;
             });
@@ -74,7 +76,16 @@ class RegionMap extends Component {
 
         });
         this.props.onChange({field: this.props.name, value: this.selected_regions});
-    }
+        this.setState({toggle_all: this.selected_regions.length === Object.values(this.all_leaf_regions).length});
+        };
+
+    onLayerClick(event) {
+        this.handleLayerClick(this.all_leaf_regions[event.target.feature.properties.u_name].findParentAtZoomLevel(this.zoom));
+    };
+
+    toggleAll = () => {
+        this.handleLayerClick(this.main_region);
+    };
 
 
     onEachFeature = (feature, layer) => {
@@ -107,21 +118,31 @@ class RegionMap extends Component {
         const position = [this.props.lat, this.props.lng],
             accessToken = "pk.eyJ1Ijoic2RjciIsImEiOiIwY2ExOGIzNmExZGJlNjI4NmIwYjBlOWE3N2JiZDk4NiJ9.15p9PYoAFlTIwSjj_sdDuw";
         return (
-            <Map id={"region_map"}
-                 center={position}
-                 zoom={this.zoom}
-                 minZoom={this.props.min_zoom}
-                 maxZoom={this.props.max_zoom}
-                 onZoomend={this.onZoomLevelChange}
-                 worldCopyJump={true}>
-                <TileLayer url={'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=' + accessToken}
-                           attribution={'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-                           '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-                           'Layer data © <a href="http://naturalearthdata.com/">Natural Earth</a>, ' +
-                           'Imagery © <a href="http://mapbox.com">Mapbox</a>'}
-                           id={'sdcr.75c657b0'}/>
-                <GeoJSON data={REGION_GEOMETRY} onEachFeature={this.onEachFeature} style={style} ref={this.mapRef}/>
-            </Map>
+            <InputWrapper label={this.props.label}>
+                <Map id={"region_map"}
+                     center={position}
+                     zoom={this.zoom}
+                     minZoom={this.props.min_zoom}
+                     maxZoom={this.props.max_zoom}
+                     onZoomend={this.onZoomLevelChange}
+                     worldCopyJump={true}>
+                    <TileLayer url={'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=' + accessToken}
+                               attribution={'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+                               '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                               'Layer data © <a href="http://naturalearthdata.com/">Natural Earth</a>, ' +
+                               'Imagery © <a href="http://mapbox.com">Mapbox</a>'}
+                               id={'sdcr.75c657b0'}/>
+                    <GeoJSON data={REGION_GEOMETRY} onEachFeature={this.onEachFeature} style={style} ref={this.mapRef}/>
+                </Map>
+                <label>
+                    <input
+                        name="toggle_all"
+                        type="checkbox"
+                        checked={this.state.toggle_all}
+                        value={this.state.toggle_all}
+                        onChange={this.toggleAll}/> Toggle all regions
+                </label>
+            </InputWrapper>
         );
     }
 }
@@ -132,13 +153,14 @@ RegionMap.propTypes = {
     lng: PropTypes.number,
     min_zoom: PropTypes.number,
     max_zoom: PropTypes.number,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    label: PropTypes.string
 };
 
 RegionMap.defaultProps = {
     lat: 51.505,
     lng: -0.09,
-    min_zoom: 2,
+    min_zoom: 1,
     max_zoom: 13
 };
 

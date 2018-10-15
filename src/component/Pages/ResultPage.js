@@ -12,6 +12,7 @@ import {DataRequester} from "../../common/DataRequester";
 
 import queryString from 'query-string';
 import ResultItem from "../ResultItem";
+import QueryStringParser from "../../Services/QueryStringParser";
 
 
 class ResultPage extends Component {
@@ -23,17 +24,8 @@ class ResultPage extends Component {
     };
 
     setResultsFromQueryString = (query_string) => {
-        const query = queryString.parse(query_string);
-        query.features = JSON.parse(query.features);
         const data_requester = new DataRequester();
-        return data_requester.getRecommendations({
-            regions: query.regions,
-            features: query.features,
-            budget: query.budget,
-            date: query.date,
-            start: query.start
-        }).then(results => {
-            console.log("results", results);
+        return data_requester.getRecommendations(QueryStringParser(query_string)).then(results => {
             this.setState({results});
         });
     };

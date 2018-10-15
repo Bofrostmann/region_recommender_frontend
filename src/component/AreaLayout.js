@@ -32,7 +32,7 @@ class AreaLayout extends Component {
 
                     </div>
                     <div className={"main"}>
-                        <Route path={"/"} component={DataPage}/>
+                        <Route path={"/"} component={DataPage} />
                         <Route path={"/results"} component={ResultPage}/>
                     </div>
                 </div>
