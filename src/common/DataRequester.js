@@ -17,10 +17,9 @@ export class DataRequester {
     };
 
     getRecommendations(settings) {
-        console.log("settings", settings);
         return axios.post(this.api_base_path + '/recommendations', settings).then(response => {
             return response.data;
-        } );
+        });
     }
 }
 
