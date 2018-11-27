@@ -8,32 +8,50 @@ import PropTypes from 'prop-types';
 
 import {Region} from '../../../Services/Region';
 import REGION_GEOMETRY from '../../../data/regionGeometry';
-import REGIONS from '../../../data/regions';
 import InputWrapper from "../InputWrapper";
 import "./RegionMap.css"
+import {DataRequester} from "../../../common/DataRequester";
 
 
 class RegionMap extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
-        this.zoom = 2;
-        this.main_region = new Region(REGIONS);
-        this.all_leaf_regions = this.main_region.getLeafRegions(); // get them here once so we don't have to get them on every hover
+        this.state = {
+            geoJSON_version: 0,
+            toggle_all: false
+        };
+        this.zoom = 1;
         this.mapRef = createRef();
         this.target_hovering_over = null;
-        this.selected_regions = Object.values(this.all_leaf_regions).map(element => (element.u_name));
-
-        this.state.toggle_all = this.selected_regions.length === Object.values(this.all_leaf_regions).length;
-
         this.mouseLeaveAtZoom = this.mouseLeaveAtZoom.bind(this);
+
         this.onZoomLevelChange = this.onZoomLevelChange.bind(this);
         this.mouseEnterAtZoom = this.mouseEnterAtZoom.bind(this);
         this.onLayerClick = this.onLayerClick.bind(this);
     };
 
     componentDidMount() {
-        this.props.onChange({field: this.props.name, value: this.selected_regions});
+        const api = new DataRequester();
+        api.getAllRegions().then(all_regions => {
+            const main_region = new Region(all_regions);
+            const all_leaf_regions = main_region.getLeafRegions(); // get them here once so we don't have to get them on every hover
+            //const selected_regions = Object.values(all_leaf_regions).map(element => (element.u_name));
+            const selected_regions = this.props.value === null
+                ? Object.values(all_leaf_regions).map(element => (element.u_name))
+                : this.props.value;
+
+            const toggle_all = selected_regions.length === Object.values(all_leaf_regions).length;
+            this.setState({
+                main_region,
+                all_leaf_regions,
+                selected_regions,
+                toggle_all,
+                geoJSON_version: this.state.geoJSON_version + 1
+            });
+            this.mapRef.current.leafletElement.clearLayers();
+            this.mapRef.current.leafletElement.addData(REGION_GEOMETRY);
+            this.props.onChange({field: this.props.name, value: selected_regions});
+        });
     };
 
 
@@ -43,7 +61,7 @@ class RegionMap extends Component {
             this.mouseLeaveAtZoom();
         }
         this.target_hovering_over = target;
-        const target_region = this.all_leaf_regions[target.feature.properties.u_name],
+        const target_region = this.state.all_leaf_regions[target.feature.properties.u_name],
             parent = target_region.findParentAtZoomLevel(this.zoom);
         Object.values(parent.getLeafRegions()).forEach(region => {
             region.layer.setStyle(getHoverStyle(region.layer.feature.is_selected));
@@ -52,7 +70,10 @@ class RegionMap extends Component {
 
     mouseLeaveAtZoom = () => {
         this.target_hovering_over = null;
-        Object.values(this.all_leaf_regions).forEach(region => {
+        Object.values(this.state.all_leaf_regions).forEach(region => {
+            if (!region.layer) {
+                debugger;
+            }
             region.layer.setStyle(style(region.layer.feature));
         });
     };
@@ -67,44 +88,47 @@ class RegionMap extends Component {
         leaf_regions.forEach(region => {
             region.layer.feature.is_selected = set_layer_active;
             region.layer.setStyle(style(region.layer.feature));
-            const index_of_element = this.selected_regions.indexOf(region.u_name);
+            const index_of_element = this.state.selected_regions.indexOf(region.u_name);
             if (index_of_element !== -1 && !set_layer_active) {
-                this.selected_regions.splice(index_of_element, 1);
+                this.state.selected_regions.splice(index_of_element, 1);
             } else if (index_of_element === -1 && set_layer_active) {
-                this.selected_regions.push(region.u_name);
+                this.state.selected_regions.push(region.u_name);
             }
 
         });
-        this.props.onChange({field: this.props.name, value: this.selected_regions});
-        this.setState({toggle_all: this.selected_regions.length === Object.values(this.all_leaf_regions).length});
-        };
+        this.props.onChange({field: this.props.name, value: this.state.selected_regions});
+        this.setState({toggle_all: this.state.selected_regions.length === Object.values(this.state.all_leaf_regions).length});
+    };
 
     onLayerClick(event) {
-        this.handleLayerClick(this.all_leaf_regions[event.target.feature.properties.u_name].findParentAtZoomLevel(this.zoom));
+        this.handleLayerClick(this.state.all_leaf_regions[event.target.feature.properties.u_name].findParentAtZoomLevel(this.zoom));
     };
 
     toggleAll = () => {
-        this.handleLayerClick(this.main_region);
+        this.handleLayerClick(this.state.main_region);
     };
 
 
     onEachFeature = (feature, layer) => {
-        layer.bindTooltip(feature.properties.u_name, {sticky: true});
-        feature.is_selected = true;
-        layer.className = 'test' + feature.properties.u_name;
-        this.main_region.insertLayer(feature, layer);
+        if (typeof this.state.main_region !== 'undefined') {
+            layer.bindTooltip(feature.properties.u_name, {sticky: true});
+            console.log("regions", this.state.selected_regions);
+            feature.is_selected = this.state.selected_regions.includes(feature.properties.u_name);
+            layer.className = 'test' + feature.properties.u_name;
+            this.state.main_region.insertLayer(feature, layer);
 
-        const onMouseEnter = event => {
-            this.mouseEnterAtZoom(event.target);
-        };
-        const onMouseLeave = event => {
-            this.mouseLeaveAtZoom();
-        };
-        layer.on({
-            click: this.onLayerClick,
-            mouseover: onMouseEnter,
-            mouseout: onMouseLeave
-        });
+            const onMouseEnter = event => {
+                this.mouseEnterAtZoom(event.target);
+            };
+            const onMouseLeave = event => {
+                this.mouseLeaveAtZoom();
+            };
+            layer.on({
+                click: this.onLayerClick,
+                mouseover: onMouseEnter,
+                mouseout: onMouseLeave
+            });
+        }
     };
 
     onZoomLevelChange(event) {
@@ -154,7 +178,8 @@ RegionMap.propTypes = {
     min_zoom: PropTypes.number,
     max_zoom: PropTypes.number,
     onChange: PropTypes.func,
-    label: PropTypes.string
+    label: PropTypes.string,
+    value: PropTypes.array
 };
 
 RegionMap.defaultProps = {

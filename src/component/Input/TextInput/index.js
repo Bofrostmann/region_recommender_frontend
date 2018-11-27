@@ -12,8 +12,6 @@ import Presentational from "./Presentational";
 class TextInput extends Component {
     constructor(props) {
         super(props);
-        console.log(props);
-        console.log(this);
 
         this.state = {
             value: props.value

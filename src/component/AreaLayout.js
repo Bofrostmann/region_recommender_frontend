@@ -5,7 +5,7 @@
 import React, {Component} from 'react';
 import './AreaLayout.css'
 
-import {Route} from "react-router-dom";
+import {Route, Link} from "react-router-dom";
 import DataPage from "./Pages/DataPage";
 import ResultPage from "./Pages/ResultPage";
 
@@ -18,7 +18,7 @@ class AreaLayout extends Component {
         return (
             <div>
                 <div className={"header"}>
-                    Travel region recommender
+                    <Link to='/'>Travel region recommender</Link>
                 </div>
                 <div className={"layout"}>
                     <div className={"nav"}>

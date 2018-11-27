@@ -6,7 +6,7 @@
 import queryString from "query-string";
 import {DataRequester} from "../common/DataRequester";
 
-export default function(query_string) {
+export default function(query_string, airports) {
     const query = queryString.parse(query_string);
     query.features = JSON.parse(query.features);
     return {
@@ -15,6 +15,6 @@ export default function(query_string) {
         budget: query.budget,
         start: query.start,
         days: query.days,
-        origin: query.origin || ''
+        origin: query.origin
     };
 }

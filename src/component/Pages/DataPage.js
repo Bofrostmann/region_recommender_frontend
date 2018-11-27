@@ -12,21 +12,26 @@ import Button from "react-bootstrap/es/Button";
 
 import queryString from 'query-string';
 import QueryStringParser from "../../Services/QueryStringParser";
+import AsyncSelectInput from "../Input/AsyncSelectInput";
 
 class DataPage extends Component {
     constructor(props) {
         super(props);
         if (typeof this.props.location.search !== 'undefined' && this.props.location.search !== '') {
-            this.state= QueryStringParser(this.props.location.search);
+            this.state = QueryStringParser(this.props.location.search);
         } else {
             this.state = {
-                regions: [],
+                regions: null,
                 features: {},
                 budget: "4000",
                 start: "10/08/1989",
                 days: "21",
                 origin: "Munich"
             };
+            const today = new Date();
+            const months = ["01", "02", "03", "06", "05", "06", "07", "08", "09", "10", "11", "12"];
+            today.setDate(today.getDate() + 30);
+            this.state.start = today.getDate() + '/' + months[today.getMonth()] + '/' + today.getFullYear();
         }
     };
 
@@ -60,7 +65,7 @@ class DataPage extends Component {
             budget: this.state.budget,
             start: this.state.start,
             days: this.state.days,
-            origin: this.state.origin
+            origin: this.state.origin.value
         });
         this.props.history.push({
             pathname: '/results',
@@ -68,14 +73,15 @@ class DataPage extends Component {
         });
     };
 
+
     render() {
         return (
             <form onSubmit={this.submitForm}>
                 <div className={"data_page use_box_shadow"}>
 
                     <div className={"data_group standard"}>
-                        <TextInput value={this.state.origin} type={"text"} name={"origin"} onChange={this.onFieldChange}
-                                   label={"From"}/>
+                        <AsyncSelectInput value={this.state.origin} name={"origin"} onChange={this.onFieldChange}
+                                          label={"From"} promise={this.data_requester.getAirportAutocompleteOptions}/>
                         <TextInput value={this.state.start} type={"text"} name={"start"} onChange={this.onFieldChange}
                                    label={"Start"}/>
                         <TextInput value={this.state.budget} type={"number"} name={"budget"}
@@ -93,7 +99,7 @@ class DataPage extends Component {
                         })}
                     </div>
                     <div className={"data_group regions"}>
-                        <RegionMap onChange={this.onFieldChange} name={"regions"} label={"Allowed regions"}/>
+                        <RegionMap onChange={this.onFieldChange} name={"regions"} label={"Allowed regions"} value={this.state.regions}/>
                     </div>
                     <div className={"buttons"}>
                         <Button block
