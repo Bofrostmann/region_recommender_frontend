@@ -112,7 +112,6 @@ class RegionMap extends Component {
     onEachFeature = (feature, layer) => {
         if (typeof this.state.main_region !== 'undefined') {
             layer.bindTooltip(feature.properties.u_name, {sticky: true});
-            console.log("regions", this.state.selected_regions);
             feature.is_selected = this.state.selected_regions.includes(feature.properties.u_name);
             layer.className = 'test' + feature.properties.u_name;
             this.state.main_region.insertLayer(feature, layer);
@@ -142,7 +141,7 @@ class RegionMap extends Component {
         const position = [this.props.lat, this.props.lng],
             accessToken = "pk.eyJ1Ijoic2RjciIsImEiOiIwY2ExOGIzNmExZGJlNjI4NmIwYjBlOWE3N2JiZDk4NiJ9.15p9PYoAFlTIwSjj_sdDuw";
         return (
-            <InputWrapper label={this.props.label}>
+            <InputWrapper label={this.props.label} getValidationState={this.props.validation_state}>
                 <Map id={"region_map"}
                      center={position}
                      zoom={this.zoom}
@@ -179,7 +178,8 @@ RegionMap.propTypes = {
     max_zoom: PropTypes.number,
     onChange: PropTypes.func,
     label: PropTypes.string,
-    value: PropTypes.array
+    value: PropTypes.array,
+    validation_state: PropTypes.oneOf(['success', 'warning', "error"])
 };
 
 RegionMap.defaultProps = {

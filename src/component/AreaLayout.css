@@ -7,22 +7,18 @@
     text-align: center;
     position: fixed;
     width: 100vw;
+    height: 7rem;
 }
 .layout {
-    padding-top: 6em;
+    padding-top: 7rem;
     display: flex;
-    width: 95vw;
+    width: 100vw;
 }
 
-.layout > .nav {
-    min-width: 15vw;
-    padding: 1em 2em;
-    margin: 1em 0;
-}
 
 .layout > .main {
     padding: 0 1em;
-    width: 85vw;
+    width: 100vw;
 }
 
 .use_box_shadow {

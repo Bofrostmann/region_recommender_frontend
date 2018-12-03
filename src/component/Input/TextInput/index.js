@@ -27,18 +27,10 @@ class TextInput extends Component {
         this.props.onChange({field: this.props.name, value: event.target.value});
     };
 
-    getValidationState = () => {
-        const length = this.state.value.length;
-        if (length > 10) return 'success';
-        else if (length > 5) return 'warning';
-        else if (length > 0) return 'error';
-        return null;
-    };
-
     render() {
         return (
             <Presentational label={this.props.label}
-                            getValidationState={this.getValidationState()}
+                            getValidationState={this.props.validation_state}
                             value={this.state.value}
                             onChange={this.onInputChange}
                             type={this.props.type}/>
@@ -51,9 +43,13 @@ TextInput.propTypes = {
     name: PropTypes.string,
     type: PropTypes.string,
     onChange: PropTypes.func,
-    value: PropTypes.string
+    value: PropTypes.string,
+    validation_state: PropTypes.oneOf(['success', 'warning', "error"])
 };
 
-TextInput.defaultProps = {};
+TextInput.defaultProps = {
+    validation_state: ''
+
+};
 
 export default TextInput;

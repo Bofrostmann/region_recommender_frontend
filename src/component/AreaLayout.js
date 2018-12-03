@@ -21,16 +21,6 @@ class AreaLayout extends Component {
                     <Link to='/'>Travel region recommender</Link>
                 </div>
                 <div className={"layout"}>
-                    <div className={"nav"}>
-                        <h3>Navigation TODO!</h3>
-                        <div className={"item"}>
-                            bla
-                        </div>
-                        <div className={"item"}>
-                            Blub
-                        </div>
-
-                    </div>
                     <div className={"main"}>
                         <Route path={"/"} component={DataPage} />
                         <Route path={"/results"} component={ResultPage}/>

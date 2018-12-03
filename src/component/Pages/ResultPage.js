@@ -32,7 +32,10 @@ class ResultPage extends Component {
         //start both requests async, since they don't depend on each other
         data_requester.getRecommendations(QueryStringParser(query_string))
             .then(results => {
-                console.log("results:", results);
+                results.forEach((result, i) => {
+                    result.image_url = '/media/region_placeholder_images/' + i + '.jpg';
+                });
+                console.log("set to false");
                 this.setState({results, loading: false});
             });
         data_requester.getFeedbackQuestions()
@@ -48,7 +51,7 @@ class ResultPage extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         scrollToComponent(this, {
-            offset: -100, //height of header + buffer of 60
+            offset: -110, //height of header + buffer of 60
             align: 'top',
             duration: 1000
         });
@@ -59,20 +62,23 @@ class ResultPage extends Component {
 
     render() {
         return (
-            <div className={"result_page"}>
+            <div className={"result_page_stretcher"}>
                 <div className={"spinner"}>
                     <RingLoader
                         sizeUnit={"em"}
                         size={10}
                         color={'#123abc'}
-                        loading={this.state.loading}
-                    />
+                        loading={this.state.loading}/>
                 </div>
-                {this.state.results.map((data, i) => {
-                    return <ResultItem duration={data.duration} cost_stay={data.region.price} flight={data.flight}
-                                       region={data.region.name} total={data.total} key={'trip_' + i}
-                                       feedback_questions={this.state.feedback_questions}/>
-                })}
+                <div className={"result_page"}>
+                    {this.state.results.map((data, i) => {
+                        return <ResultItem duration={data.duration} cost_stay={data.region.price} flight={data.flight}
+                                           region={data.region.name} total={data.total} key={'trip_' + i}
+                                           feedback_questions={this.state.feedback_questions}
+                                           image_url={data.image_url}
+                                           result_id={data.result_id}/>
+                    })}
+                </div>
             </div>
         );
     }

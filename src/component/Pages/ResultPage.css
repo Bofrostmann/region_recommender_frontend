@@ -2,12 +2,15 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    min-height: 100vh;
+    align-items: flex-start;
+}
+.result_page_stretcher {
+    min-height: calc(100vh - 120px); /* be a bit smaller, so we have space for the header*/
 }
 
-.result_page .spinner{
-    width: 100%;
-    align-self: center;
+.result_page_stretcher .spinner{
+    width: 100vw;
     display: flex;
     justify-content: center;
+    position: absolute;
 }

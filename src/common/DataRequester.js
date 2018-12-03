@@ -23,6 +23,7 @@ export class DataRequester {
         }
         return axios.post(this.api_base_path + '/recommendations', settings).then(response => {
             localStorage.setItem('token', response.data.token);
+            console.log("recommendations", response.data.result);
             return response.data.result;
         });
     };
@@ -34,7 +35,7 @@ export class DataRequester {
             });
     };
 
-    getAirportAutocompleteOptions(input) {
+    getAirportAutocompleteOptions = (input) => {
         return axios.post(this.api_base_path + '/airportAutocomplete', {query: input})
             .then(response => {
                 response.data.result.forEach(airport => {
@@ -51,6 +52,11 @@ export class DataRequester {
         });
     };
 
+    submitFeedbackQuestions(data) {
+        return axios.post(this.api_base_path + '/submitFeedbackQuestions', {data}).then(response => {
+            return response.data.success;
+        });
 
+    };
 }
 

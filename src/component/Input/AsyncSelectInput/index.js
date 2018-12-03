@@ -38,7 +38,7 @@ class AsyncSelectInput extends Component {
 
     render() {
         return (
-            <InputWrapper label={this.props.label}>
+            <InputWrapper label={this.props.label} getValidationState={this.props.validation_state}>
                 <Select loadOptions={this.props.promise} onChange={this.onInputChange}
                         value={this.state.value}/>
             </InputWrapper>
@@ -53,10 +53,13 @@ AsyncSelectInput.propTypes = {
         PropTypes.object,
         PropTypes.string
     ]),
+    validation_state: PropTypes.oneOf(['success', 'warning', "error"]),
     promise: PropTypes.func,
     label: PropTypes.string
 };
 
-AsyncSelectInput.defaultProps = {};
+AsyncSelectInput.defaultProps = {
+    validation_state: ""
+};
 
 export default AsyncSelectInput;

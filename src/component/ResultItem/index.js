@@ -2,73 +2,147 @@
  *    Created by Florian Haimerl (florian.haimerl@tum.de)
  */
 
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from "prop-types";
 
 import './ResultItem.css'
 import SliderInput from "../Input/SliderInput";
-import Button from "react-bootstrap/es/Button";
+import {Button, Image, Collapse, Well, Label} from "react-bootstrap";
+import {DataRequester} from "../../common/DataRequester";
 
-const showFlightInfoRow = (flight) => {
-    if (typeof flight.price !== 'undefined') {
-        return (
-            <tr>
-                <td><a href={flight.url} target={"_blank"}>Flights starting at </a></td>
-                <td><a href={flight.url} target={"_blank"}>{flight.price} €</a></td>
-            </tr>
-        )
-    } else {
-        return (
-            <tr>
-                <td>No flight info available</td>
-                <td>--- €</td>
-            </tr>
-        )
-    }
-};
+class ResultItem extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            show_questions: false,
+            is_submitted: false
+        };
+        this.props.feedback_questions.forEach(question => {
+            this.state['question_' + question.id] = 0;
+        });
+    };
 
-const ResultItem = ({region, cost_stay, total, duration, flight, feedback_questions}) => (
-    <div className={"result_item use_box_shadow"}>
-        {console.log(feedback_questions)}
-        <div className={"trip_header"}>
-            <span className={"region_name"}>{region}</span><span className={"days"}>{duration} days</span>
-        </div>
-        <div className="weather"> WEATHER</div>
-        <div className="cost">
-            <table>
-                <tbody>
+    showFlightInfoRow = (flight) => {
+        if (typeof flight.price !== 'undefined') {
+            return (
                 <tr>
-                    <td>Stay</td>
-                    <td>{cost_stay} €</td>
+                    <td><a href={flight.url} target={"_blank"}>Flights starting at </a></td>
+                    <td><a href={flight.url} target={"_blank"}>{flight.price} €</a></td>
                 </tr>
-                {showFlightInfoRow(flight)}
-                <tr className="total">
-                    <td></td>
-                    <td>{total} €</td>
+            )
+        } else {
+            return (
+                <tr>
+                    <td>No flight info available</td>
+                    <td>--- €</td>
                 </tr>
-                </tbody>
-            </table>
-        </div>
-        {feedback_questions.length
-            ? (<form className={"feedback_block border_box_block"} onSubmit={event => {console.log("event", event)}}>
-                <span className={"block_header"}>Feedback</span>
-                {feedback_questions.map(question => {
-                    return (<SliderInput label={question.text}
-                    onChange={event => {console.log("event", event)}}
-                    value={0}
-                    name={"question_" + question.id}/>);
-                })}
-                <Button block
-                        bsSize="large"
-                        bsStyle="primary"
-                        type="submit">
-                    Submit
-                </Button>
-            </form>)
-            : []}
+            )
+        }
+    };
 
-    </div>
-);
+    toggleQuestions = (event, value) => {
+        // always hide questions, but only show them, if they were not yet submitted
+        if (this.state.show_questions || !this.state.is_submitted) {
+            this.setState({show_questions: value});
+        }
+    };
+
+    onFeebackSubmit = event => {
+        event.preventDefault();
+        const api = new DataRequester();
+        console.log("feedback_submit", this.state);
+        let answers = {};
+        Object.keys(this.state).forEach(key => {
+            if (key.startsWith('question')) {
+                answers[key] = this.state[key];
+            }
+        });
+        api.submitFeedbackQuestions({result_id: this.props.result_id, answers}).then(success => {
+            if (success) {
+                this.setState({is_submitted: true});
+            }
+        });
+    };
+
+    onQuestionChange = event => {
+        this.setState({[event.field]: event.value});
+        console.log("question_change", event);
+    };
+
+    showQuestionBlock = () => {
+        if (this.state.is_submitted) {
+            return (<Label bsStyle="success">
+                    Thank you!
+                </Label>
+            );
+        } else {
+            return (
+
+                <div className={"feedback_block border_box_block"}>
+                    <form onSubmit={this.onFeebackSubmit}>
+                        <span className={"block_header"}>Feedback</span>
+                        {this.props.feedback_questions.map(question => {
+                            return (<SliderInput label={question.text}
+                                                 key={question.key}
+                                                 onChange={this.onQuestionChange}
+                                                 value={this.state['question_' + question.id]}
+                                                 name={"question_" + question.id}/>);
+                        })}
+                        <Button block
+                                bsSize="large"
+                                bsStyle="primary"
+                                type="submit">
+                            Submit
+                        </Button>
+                    </form>
+                </div>
+            );
+        }
+    };
+
+
+    render() {
+        return (
+            <div className={"result_item use_box_shadow"} onMouseEnter={event => {this.toggleQuestions(event, true)}}
+                 onMouseLeave={event => {this.toggleQuestions(event, false)}}>
+                <div className={"result_block"}>
+                    <div className={"trip_header"}>
+                        <span className={"region_name"}>{this.props.region}</span><span
+                        className={"days"}>{this.props.duration} days</span>
+                    </div>
+                    <div className="region_image">
+                        <Image src={this.props.image_url} circle/>
+                    </div>
+                    <div className="cost">
+                        <table>
+                            <tbody>
+                            <tr>
+                                <td>Stay</td>
+                                <td>{this.props.cost_stay} €</td>
+                            </tr>
+                            {this.showFlightInfoRow(this.props.flight)}
+                            <tr className="total">
+                                <td></td>
+                                <td>{this.props.total} €</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {this.props.feedback_questions.length
+                    ? (<Collapse in={this.state.show_questions}>
+                        <div>
+                            <Well>
+                                {this.showQuestionBlock()}
+                            </Well>
+                        </div>
+                    </Collapse>)
+                    : []}
+
+            </div>
+        );
+    };
+}
 
 ResultItem.propTypes = {
     region: PropTypes.string,
@@ -80,9 +154,12 @@ ResultItem.propTypes = {
         url: PropTypes.string,
         price: PropTypes.number
     }),
+    image_url: PropTypes.string,
+    result_id: PropTypes.number,
     feedback_questions: PropTypes.arrayOf(PropTypes.shape({
         key: PropTypes.string,
-        text: PropTypes.text
+        text: PropTypes.string,
+        id: PropTypes.number
     }))
 };
 

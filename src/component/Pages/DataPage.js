@@ -26,14 +26,25 @@ class DataPage extends Component {
                 budget: "4000",
                 start: "10/08/1989",
                 days: "21",
-                origin: "Munich"
+                origin: "Munich",
             };
             const today = new Date();
             const months = ["01", "02", "03", "06", "05", "06", "07", "08", "09", "10", "11", "12"];
             today.setDate(today.getDate() + 30);
             this.state.start = today.getDate() + '/' + months[today.getMonth()] + '/' + today.getFullYear();
         }
+        this.state.validation_state = this.getDefaultValidationState();
     };
+
+    getDefaultValidationState() {
+        return {
+            origin: "",
+            start: "",
+            budget: "",
+            days: "",
+            regions: ""
+        }
+    }
 
     data_requester = new DataRequester();
 
@@ -47,7 +58,9 @@ class DataPage extends Component {
         this.setState({features});
     };
     onFieldChange = (event) => {
-        this.setState({[event.field]: event.value});
+        let validation_state = this.state.validation_state;
+        validation_state[event.field] = "";
+        this.setState({[event.field]: event.value, validation_state});
     };
 
     getFeatures = () => {
@@ -59,6 +72,21 @@ class DataPage extends Component {
     submitForm = (event) => {
         // prevent default form submission event
         event.preventDefault();
+        console.log("submit_state", this.state);
+        let is_valid = true;
+        let validation_state = this.state.validation_state;
+        Object.keys(validation_state).forEach(key => {
+            console.log(key, this.state[key]);
+            console.log(Array.isArray(this.state[key]));
+            if (typeof this.state[key] === 'undefined' || this.state[key] === "" || (Array.isArray(this.state[key]) && this.state[key].length === 0) ) {
+                is_valid = false;
+                validation_state[key] = "error";
+            }
+        });
+        if (!is_valid) {
+            this.setState({validation_state});
+            return;
+        }
         const query_string = queryString.stringify({
             regions: this.state.regions,
             features: JSON.stringify(this.state.features),
@@ -81,13 +109,19 @@ class DataPage extends Component {
 
                     <div className={"data_group standard"}>
                         <AsyncSelectInput value={this.state.origin} name={"origin"} onChange={this.onFieldChange}
-                                          label={"From"} promise={this.data_requester.getAirportAutocompleteOptions}/>
-                        <TextInput value={this.state.start} type={"text"} name={"start"} onChange={this.onFieldChange}
-                                   label={"Start"}/>
+                                          label={"From"} promise={this.data_requester.getAirportAutocompleteOptions}
+                                          validation_state={this.state.validation_state.origin}/>
+                        <TextInput value={this.state.start} type={"text"} name={"start"}
+                                   onChange={this.onFieldChange}
+                                   label={"Start"}
+                                   validation_state={this.state.validation_state.start}/>
                         <TextInput value={this.state.budget} type={"number"} name={"budget"}
-                                   onChange={this.onFieldChange} label={"Budget"}/>
-                        <TextInput value={this.state.days} type={"number"} name={"days"} onChange={this.onFieldChange}
-                                   label={"Days"}/>
+                                   onChange={this.onFieldChange} label={"Budget"}
+                                   validation_state={this.state.validation_state.budget}/>
+                        <TextInput value={this.state.days} type={"number"} name={"days"}
+                                   onChange={this.onFieldChange}
+                                   label={"Days"}
+                                   validation_state={this.state.validation_state.days}/>
                     </div>
                     <div className={"data_group features"}>
                         {Object.values(this.state.features).map((feature) => {
@@ -99,7 +133,9 @@ class DataPage extends Component {
                         })}
                     </div>
                     <div className={"data_group regions"}>
-                        <RegionMap onChange={this.onFieldChange} name={"regions"} label={"Allowed regions"} value={this.state.regions}/>
+                        <RegionMap onChange={this.onFieldChange} name={"regions"} label={"Allowed regions"}
+                                   value={this.state.regions}
+                        validation_state={this.state.validation_state.regions}/>
                     </div>
                     <div className={"buttons"}>
                         <Button block
