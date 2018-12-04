@@ -6,6 +6,7 @@
 }
 .result_page_stretcher {
     min-height: calc(100vh - 120px); /* be a bit smaller, so we have space for the header*/
+    width: calc(100% - 1em);
 }
 
 .result_page_stretcher .spinner{

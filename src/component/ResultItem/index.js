@@ -23,7 +23,8 @@ class ResultItem extends Component {
     };
 
     showFlightInfoRow = (flight) => {
-        if (typeof flight.price !== 'undefined') {
+        console.log("flightprice", flight.price);
+        if (typeof flight.price !== 'undefined' && flight.price !== 0) {
             return (
                 <tr>
                     <td><a href={flight.url} target={"_blank"}>Flights starting at </a></td>
@@ -79,8 +80,8 @@ class ResultItem extends Component {
             return (
 
                 <div className={"feedback_block border_box_block"}>
+                    <span className={"block_header"}>Feedback</span>
                     <form onSubmit={this.onFeebackSubmit}>
-                        <span className={"block_header"}>Feedback</span>
                         {this.props.feedback_questions.map(question => {
                             return (<SliderInput label={question.text}
                                                  key={question.key}
@@ -103,8 +104,12 @@ class ResultItem extends Component {
 
     render() {
         return (
-            <div className={"result_item use_box_shadow"} onMouseEnter={event => {this.toggleQuestions(event, true)}}
-                 onMouseLeave={event => {this.toggleQuestions(event, false)}}>
+            <div className={"result_item use_box_shadow"} onMouseEnter={event => {
+                this.toggleQuestions(event, true)
+            }}
+                 onMouseLeave={event => {
+                     this.toggleQuestions(event, false)
+                 }}>
                 <div className={"result_block"}>
                     <div className={"trip_header"}>
                         <span className={"region_name"}>{this.props.region}</span><span

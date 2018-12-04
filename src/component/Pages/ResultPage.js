@@ -51,7 +51,7 @@ class ResultPage extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         scrollToComponent(this, {
-            offset: -110, //height of header + buffer of 60
+            offset: -100, //height of header + buffer of 60
             align: 'top',
             duration: 1000
         });
@@ -70,15 +70,19 @@ class ResultPage extends Component {
                         color={'#123abc'}
                         loading={this.state.loading}/>
                 </div>
-                <div className={"result_page"}>
-                    {this.state.results.map((data, i) => {
-                        return <ResultItem duration={data.duration} cost_stay={data.region.price} flight={data.flight}
-                                           region={data.region.name} total={data.total} key={'trip_' + i}
-                                           feedback_questions={this.state.feedback_questions}
-                                           image_url={data.image_url}
-                                           result_id={data.result_id}/>
-                    })}
-                </div>
+                {this.state.loading
+                    ? []
+                    : (<div className={"result_page"}>
+                            {this.state.results.map((data, i) => {
+                                return <ResultItem duration={data.duration} cost_stay={data.region.price}
+                                                   flight={data.flight}
+                                                   region={data.region.name} total={data.total} key={'trip_' + i}
+                                                   feedback_questions={this.state.feedback_questions}
+                                                   image_url={data.image_url}
+                                                   result_id={data.result_id}/>
+                            })}
+                        </div>
+                    )}
             </div>
         );
     }

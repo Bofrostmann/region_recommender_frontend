@@ -179,7 +179,7 @@ RegionMap.propTypes = {
     onChange: PropTypes.func,
     label: PropTypes.string,
     value: PropTypes.array,
-    validation_state: PropTypes.oneOf(['success', 'warning', "error"])
+    validation_state: PropTypes.oneOf(['success', 'warning', 'error', ''])
 };
 
 RegionMap.defaultProps = {

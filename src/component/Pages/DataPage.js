@@ -105,9 +105,9 @@ class DataPage extends Component {
     render() {
         return (
             <form onSubmit={this.submitForm}>
-                <div className={"data_page use_box_shadow"}>
+                <div className={"data_page"}>
 
-                    <div className={"data_group standard"}>
+                    <div className={"data_group standard use_box_shadow"}>
                         <AsyncSelectInput value={this.state.origin} name={"origin"} onChange={this.onFieldChange}
                                           label={"From"} promise={this.data_requester.getAirportAutocompleteOptions}
                                           validation_state={this.state.validation_state.origin}/>
@@ -123,7 +123,7 @@ class DataPage extends Component {
                                    label={"Days"}
                                    validation_state={this.state.validation_state.days}/>
                     </div>
-                    <div className={"data_group features"}>
+                    <div className={"data_group features use_box_shadow"}>
                         {Object.values(this.state.features).map((feature) => {
                             return <SliderInput key={feature.key}
                                                 label={feature.label}
@@ -132,14 +132,13 @@ class DataPage extends Component {
                                                 value={feature.value}/>;
                         })}
                     </div>
-                    <div className={"data_group regions"}>
+                    <div className={"data_group regions use_box_shadow"}>
                         <RegionMap onChange={this.onFieldChange} name={"regions"} label={"Allowed regions"}
                                    value={this.state.regions}
                         validation_state={this.state.validation_state.regions}/>
                     </div>
                     <div className={"buttons"}>
-                        <Button block
-                                bsSize="large"
+                        <Button bsSize="large"
                                 bsStyle="primary"
                                 type="submit">
                             Submit

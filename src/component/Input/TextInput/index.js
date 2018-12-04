@@ -44,7 +44,7 @@ TextInput.propTypes = {
     type: PropTypes.string,
     onChange: PropTypes.func,
     value: PropTypes.string,
-    validation_state: PropTypes.oneOf(['success', 'warning', "error"])
+    validation_state: PropTypes.oneOf(['success', 'warning', 'error', ''])
 };
 
 TextInput.defaultProps = {

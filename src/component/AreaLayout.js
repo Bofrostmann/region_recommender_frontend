@@ -18,7 +18,7 @@ class AreaLayout extends Component {
         return (
             <div>
                 <div className={"header"}>
-                    <Link to='/'>Travel region recommender</Link>
+                    <Link to='/'>DestiRec || Travel Destination Recommender</Link>
                 </div>
                 <div className={"layout"}>
                     <div className={"main"}>

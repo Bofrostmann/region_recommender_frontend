@@ -53,7 +53,7 @@ AsyncSelectInput.propTypes = {
         PropTypes.object,
         PropTypes.string
     ]),
-    validation_state: PropTypes.oneOf(['success', 'warning', "error"]),
+    validation_state: PropTypes.oneOf(['success', 'warning', 'error', '']),
     promise: PropTypes.func,
     label: PropTypes.string
 };

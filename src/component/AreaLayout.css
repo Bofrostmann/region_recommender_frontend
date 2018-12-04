@@ -1,29 +1,32 @@
 .header {
     box-shadow: -5px 5px 30px 0 darkgray;
     z-index: 10000;
-    background-color: #d9edf7;
+    background: linear-gradient(to bottom, #7d7e7d 0%,#0e0e0e 100%);
     padding: 0.5em;
     font-size: 2em;
     text-align: center;
     position: fixed;
-    width: 100vw;
     height: 7rem;
 }
+
+.header a {
+    color: white;
+}
+
+
 .layout {
     padding-top: 7rem;
     display: flex;
     width: 100vw;
 }
 
-
+.header,
 .layout > .main {
-    padding: 0 1em;
     width: 100vw;
 }
 
 .use_box_shadow {
     border-radius: 5px;
-    padding: 1em;
     margin: 1em;
     box-shadow: -5px 5px 20px 0 rgba(0,0,0,0.5);
 }
