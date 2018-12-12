@@ -72,12 +72,9 @@ class DataPage extends Component {
     submitForm = (event) => {
         // prevent default form submission event
         event.preventDefault();
-        console.log("submit_state", this.state);
         let is_valid = true;
         let validation_state = this.state.validation_state;
         Object.keys(validation_state).forEach(key => {
-            console.log(key, this.state[key]);
-            console.log(Array.isArray(this.state[key]));
             if (typeof this.state[key] === 'undefined' || this.state[key] === "" || (Array.isArray(this.state[key]) && this.state[key].length === 0) ) {
                 is_valid = false;
                 validation_state[key] = "error";

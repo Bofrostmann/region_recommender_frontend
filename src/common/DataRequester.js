@@ -3,10 +3,11 @@
  */
 
 import axios from 'axios';
+import CONSTANTS from '../CONSTANTS';
 
 export class DataRequester {
     constructor() {
-        this.api_base_path = "http://localhost:3001/recommenderAPI";
+        this.api_base_path = CONSTANTS.API_URL;
     }
 
     getAllFeatures() {

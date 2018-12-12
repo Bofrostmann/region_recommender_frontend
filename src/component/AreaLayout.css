@@ -20,9 +20,13 @@
     width: 100vw;
 }
 
-.header,
-.layout > .main {
+.header {
     width: 100vw;
+}
+
+.layout > .main {
+    width: 90vw;
+    margin-left: 5vw;
 }
 
 .use_box_shadow {

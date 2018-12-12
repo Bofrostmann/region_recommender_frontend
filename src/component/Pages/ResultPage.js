@@ -16,6 +16,10 @@ import ResultItem from "../ResultItem";
 import QueryStringParser from "../../Services/QueryStringParser";
 
 
+import imageExists from 'image-exists';
+
+
+
 class ResultPage extends Component {
     constructor(props) {
         super(props);
@@ -32,11 +36,16 @@ class ResultPage extends Component {
         //start both requests async, since they don't depend on each other
         data_requester.getRecommendations(QueryStringParser(query_string))
             .then(results => {
-                results.forEach((result, i) => {
-                    result.image_url = '/media/region_placeholder_images/' + i + '.jpg';
+                results.forEach(result => {
+                    result.image_url = process.env.PUBLIC_URL + '/media/region_images/' + result.region.key + '.jpg';
+                    imageExists(result.image_url, exists => {
+                        if (!exists) {
+                            result.image_url = '';
+                        }
+                        this.setState({results, loading: false});
+                    });
                 });
-                console.log("set to false");
-                this.setState({results, loading: false});
+
             });
         data_requester.getFeedbackQuestions()
             .then(feedback_questions => {

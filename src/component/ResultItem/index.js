@@ -23,7 +23,6 @@ class ResultItem extends Component {
     };
 
     showFlightInfoRow = (flight) => {
-        console.log("flightprice", flight.price);
         if (typeof flight.price !== 'undefined' && flight.price !== 0) {
             return (
                 <tr>
@@ -51,7 +50,6 @@ class ResultItem extends Component {
     onFeebackSubmit = event => {
         event.preventDefault();
         const api = new DataRequester();
-        console.log("feedback_submit", this.state);
         let answers = {};
         Object.keys(this.state).forEach(key => {
             if (key.startsWith('question')) {
@@ -67,7 +65,6 @@ class ResultItem extends Component {
 
     onQuestionChange = event => {
         this.setState({[event.field]: event.value});
-        console.log("question_change", event);
     };
 
     showQuestionBlock = () => {
@@ -115,9 +112,12 @@ class ResultItem extends Component {
                         <span className={"region_name"}>{this.props.region}</span><span
                         className={"days"}>{this.props.duration} days</span>
                     </div>
-                    <div className="region_image">
-                        <Image src={this.props.image_url} circle/>
-                    </div>
+                    {this.props.image_url === ''
+                        ? []
+                        : <div className="region_image">
+                            <Image src={this.props.image_url} circle/>
+                        </div>
+                    }
                     <div className="cost">
                         <table>
                             <tbody>
