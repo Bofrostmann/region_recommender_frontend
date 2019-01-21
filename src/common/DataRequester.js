@@ -10,9 +10,10 @@ export class DataRequester {
         this.api_base_path = CONSTANTS.API_URL;
     }
 
-    getAllFeatures() {
-        return axios.get(this.api_base_path + '/features')
+    getAllActivities() {
+        return axios.get(this.api_base_path + '/activeActivities')
             .then(response => {
+                console.log("respü", response);
                 return response.data;
             });
     };
@@ -53,11 +54,26 @@ export class DataRequester {
         });
     };
 
-    submitFeedbackQuestions(data) {
-        return axios.post(this.api_base_path + '/submitFeedbackQuestions', {data}).then(response => {
+    submitFeedbackAnswers(data) {
+        return axios.post(this.api_base_path + '/submitFeedbackAnswers', {data}).then(response => {
             return response.data.success;
         });
-
     };
+
+    getAllSettings() {
+        return axios.get(this.api_base_path + '/settings').then(response => {
+            return response.data;
+        });
+    };
+}
+
+export function GetSetting(settings, key) {
+    let value;
+    settings.forEach(setting => {
+        if (setting.key === key) {
+            value = setting.value;
+        }
+    });
+    return value;
 }
 

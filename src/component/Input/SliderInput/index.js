@@ -26,8 +26,10 @@ class SliderInput extends Component {
     };
 
     render() {
+        console.log("props slider", this.props);
         return (
-            <Presentational label={this.props.label} onChange={this.onSliderChange} value={this.state.value}/>
+            <Presentational label={this.props.label} onChange={this.onSliderChange} value={this.state.value}
+            max={this.props.max} min={this.props.min}/>
         );
     }
 }
@@ -36,7 +38,9 @@ SliderInput.propTypes = {
     label: PropTypes.string,
     name: PropTypes.string,
     onChange: PropTypes.func,
-    value: PropTypes.number
+    value: PropTypes.number,
+    min: PropTypes.string,
+    max: PropTypes.string
 };
 
 SliderInput.defaultProps = {

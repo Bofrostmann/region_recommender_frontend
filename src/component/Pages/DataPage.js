@@ -7,7 +7,7 @@ import TextInput from "../Input/TextInput";
 import SliderInput from "../Input/SliderInput";
 import RegionMap from "../Input/RegionMap";
 import "./DataPage.css"
-import {DataRequester} from "../../common/DataRequester";
+import {DataRequester, GetSetting} from "../../common/DataRequester";
 import Button from "react-bootstrap/es/Button";
 
 import queryString from 'query-string';
@@ -22,11 +22,14 @@ class DataPage extends Component {
         } else {
             this.state = {
                 regions: null,
-                features: {},
+                activities: {},
                 budget: "4000",
                 start: "10/08/1989",
                 days: "21",
                 origin: "Munich",
+                activity_label_start: '',
+                activity_label_end: '',
+                activity_value_init: ''
             };
             const today = new Date();
             const months = ["01", "02", "03", "06", "05", "06", "07", "08", "09", "10", "11", "12"];
@@ -49,24 +52,32 @@ class DataPage extends Component {
     data_requester = new DataRequester();
 
     componentDidMount() {
-        this.getFeatures();
+        this.data_requester.getAllSettings()
+            .then(settings => {
+                const activity_label_start = GetSetting(settings, 'activity_label_start'),
+                    activity_label_end = GetSetting(settings, 'activity_label_end'),
+                    activity_value_init = GetSetting(settings, 'activity_value_init');
+                return {activity_label_start, activity_label_end, activity_value_init};
+            })
+            .then(settings => {
+                this.data_requester.getAllActivities().then(activities => {
+                    Object.values(activities).forEach(activity => {
+                        activity.value = settings.activity_value_init;
+                    });
+                    this.setState({...settings, activities});
+                });
+            });
     }
 
-    onFeatureChange = (event) => {
-        let features = this.state.features;
-        features[event.field].value = event.value;
-        this.setState({features});
+    onActivityChange = (event) => {
+        let activities = this.state.activities;
+        activities[event.field].value = event.value;
+        this.setState({activities});
     };
     onFieldChange = (event) => {
         let validation_state = this.state.validation_state;
         validation_state[event.field] = "";
         this.setState({[event.field]: event.value, validation_state});
-    };
-
-    getFeatures = () => {
-        this.data_requester.getAllFeatures().then(features => {
-            this.setState({features});
-        });
     };
 
     submitForm = (event) => {
@@ -75,7 +86,7 @@ class DataPage extends Component {
         let is_valid = true;
         let validation_state = this.state.validation_state;
         Object.keys(validation_state).forEach(key => {
-            if (typeof this.state[key] === 'undefined' || this.state[key] === "" || (Array.isArray(this.state[key]) && this.state[key].length === 0) ) {
+            if (typeof this.state[key] === 'undefined' || this.state[key] === "" || (Array.isArray(this.state[key]) && this.state[key].length === 0)) {
                 is_valid = false;
                 validation_state[key] = "error";
             }
@@ -86,7 +97,7 @@ class DataPage extends Component {
         }
         const query_string = queryString.stringify({
             regions: this.state.regions,
-            features: JSON.stringify(this.state.features),
+            activities: JSON.stringify(this.state.activities),
             budget: this.state.budget,
             start: this.state.start,
             days: this.state.days,
@@ -120,19 +131,21 @@ class DataPage extends Component {
                                    label={"Days"}
                                    validation_state={this.state.validation_state.days}/>
                     </div>
-                    <div className={"data_group features use_box_shadow"}>
-                        {Object.values(this.state.features).map((feature) => {
-                            return <SliderInput key={feature.key}
-                                                label={feature.label}
-                                                name={feature.key}
-                                                onChange={this.onFeatureChange}
-                                                value={feature.value}/>;
+                    <div className={"data_group activities use_box_shadow"}>
+                        {Object.values(this.state.activities).map((activity) => {
+                            return <SliderInput key={activity.key}
+                                                label={activity.label}
+                                                name={activity.key}
+                                                onChange={this.onActivityChange}
+                                                value={activity.value}
+                                                min={this.state.activity_label_start}
+                                                max={this.state.activity_label_end}/>;
                         })}
                     </div>
                     <div className={"data_group regions use_box_shadow"}>
                         <RegionMap onChange={this.onFieldChange} name={"regions"} label={"Allowed regions"}
                                    value={this.state.regions}
-                        validation_state={this.state.validation_state.regions}/>
+                                   validation_state={this.state.validation_state.regions}/>
                     </div>
                     <div className={"buttons"}>
                         <Button bsSize="large"

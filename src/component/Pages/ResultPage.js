@@ -6,7 +6,7 @@ import React, {Component} from 'react';
 
 import "./ResultPage.css"
 
-import {DataRequester} from "../../common/DataRequester";
+import {DataRequester, GetSetting} from "../../common/DataRequester";
 import scrollToComponent from 'react-scroll-to-component';
 
 import {RingLoader} from 'react-spinners';
@@ -17,7 +17,6 @@ import QueryStringParser from "../../Services/QueryStringParser";
 
 
 import imageExists from 'image-exists';
-
 
 
 class ResultPage extends Component {
@@ -51,6 +50,12 @@ class ResultPage extends Component {
             .then(feedback_questions => {
                 this.setState({feedback_questions});
             });
+        data_requester.getAllSettings()
+            .then(settings => {
+                const feedback_label_start = GetSetting(settings, 'feedback_label_start'),
+                    feedback_label_end = GetSetting(settings, 'feedback_label_end');
+                this.setState({feedback_label_start, feedback_label_end});
+            })
     };
 
     componentDidMount() {
@@ -88,7 +93,9 @@ class ResultPage extends Component {
                                                    region={data.region.name} total={data.total} key={'trip_' + i}
                                                    feedback_questions={this.state.feedback_questions}
                                                    image_url={data.image_url}
-                                                   result_id={data.result_id}/>
+                                                   result_id={data.result_id}
+                                                   feedback_label_start={this.state.feedback_label_start}
+                                                   feedback_label_end={this.state.feedback_label_end}/>
                             })}
                         </div>
                     )}

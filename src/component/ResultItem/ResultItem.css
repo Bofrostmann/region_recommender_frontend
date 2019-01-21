@@ -2,6 +2,7 @@
     flex-basis: calc(50% - 2em);
     justify-content: space-between;
     padding: 1em;
+    flex-grow: 1;
 }
 
 .result_item .result_block {

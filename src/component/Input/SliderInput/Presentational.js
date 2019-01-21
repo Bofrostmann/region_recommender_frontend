@@ -9,10 +9,10 @@ import 'rc-slider/assets/index.css';
 import InputWrapper from "../InputWrapper/index";
 import PropTypes from "prop-types";
 
-const Presentational = ({label, onChange, value}) => (
+const Presentational = ({label, onChange, value, min, max}) => (
     <InputWrapper label={label}>
         <Slider dots min={0} max={4} onChange={onChange}
-                marks={{0: 0, 1: 1, 2: 2, 3: 3, 4: 4}}
+                marks={{0: min, 1: '', 2: '', 3: '', 4: max}}
                 value={value}/>
     </InputWrapper>
 );
@@ -20,7 +20,9 @@ const Presentational = ({label, onChange, value}) => (
 Presentational.propTypes = {
     label: PropTypes.string,
     onChange: PropTypes.func,
-    value: PropTypes.number
+    value: PropTypes.number,
+    min: PropTypes.string,
+    max: PropTypes.string
 };
 
 export default Presentational;

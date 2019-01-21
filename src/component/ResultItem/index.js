@@ -56,7 +56,7 @@ class ResultItem extends Component {
                 answers[key] = this.state[key];
             }
         });
-        api.submitFeedbackQuestions({result_id: this.props.result_id, answers}).then(success => {
+        api.submitFeedbackAnswers({result_id: this.props.result_id, answers}).then(success => {
             if (success) {
                 this.setState({is_submitted: true});
             }
@@ -84,7 +84,9 @@ class ResultItem extends Component {
                                                  key={question.key}
                                                  onChange={this.onQuestionChange}
                                                  value={this.state['question_' + question.id]}
-                                                 name={"question_" + question.id}/>);
+                                                 name={"question_" + question.id}
+                                                 min={this.props.feedback_label_start}
+                                                 max={this.props.feedback_label_end}/>);
                         })}
                         <Button block
                                 bsSize="large"
@@ -165,7 +167,9 @@ ResultItem.propTypes = {
         key: PropTypes.string,
         text: PropTypes.string,
         id: PropTypes.number
-    }))
+    })),
+    feedback_label_start: PropTypes.string,
+    feedback_label_end: PropTypes.string
 };
 
 export default ResultItem;

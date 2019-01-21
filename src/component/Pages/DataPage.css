@@ -9,10 +9,11 @@
     flex-wrap: wrap;
     flex-basis: calc(50% - 2em);
     justify-content: space-between;
+    flex-grow: 1;
 }
 
 .data_group.standard,
-.buttons{
+.buttons {
     flex-basis: 100%;
 }
 
@@ -30,4 +31,12 @@
     display: flex;
     justify-content: center;
     margin: 1em;
+}
+
+.input_wrapper {
+    margin: 1em 3em 3em;
+}
+
+.data_group > .input_wrapper {
+    flex-basis: 200px;
 }
