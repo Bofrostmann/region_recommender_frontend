@@ -14,32 +14,27 @@ import queryString from 'query-string';
 import QueryStringParser from "../../Services/QueryStringParser";
 import AsyncSelectInput from "../Input/AsyncSelectInput";
 
+import scrollToComponent from 'react-scroll-to-component';
+
 class DataPage extends Component {
     constructor(props) {
         super(props);
         if (typeof this.props.location.search !== 'undefined' && this.props.location.search !== '') {
             this.state = QueryStringParser(this.props.location.search);
         } else {
-            this.state = {
-                regions: null,
-                activities: {},
-                budget: "4000",
-                start: "10/08/1989",
-                days: "21",
-                origin: "Munich",
-                activity_label_start: '',
-                activity_label_end: '',
-                activity_value_init: ''
-            };
-            const today = new Date();
-            const months = ["01", "02", "03", "06", "05", "06", "07", "08", "09", "10", "11", "12"];
-            today.setDate(today.getDate() + 30);
-            this.state.start = today.getDate() + '/' + months[today.getMonth()] + '/' + today.getFullYear();
+            this.state = this.getDefaultState();
+            this.state.regions = null;
+            this.state.activities = {};
+            this.state.activity_label_start = '';
+            this.state.activity_label_end = '';
+            this.state.activity_value_init = '';
         }
-        this.state.validation_state = this.getDefaultValidationState();
+        this.state.validation_state = DataPage.getDefaultValidationState();
     };
 
-    getDefaultValidationState() {
+    data_requester = new DataRequester();
+
+    static getDefaultValidationState() {
         return {
             origin: "",
             start: "",
@@ -49,7 +44,31 @@ class DataPage extends Component {
         }
     }
 
-    data_requester = new DataRequester();
+    componentDidUpdate(prevProps) {
+        // Typical usage (don't forget to compare props):
+        if (prevProps.location.search !== '')
+            if (typeof prevProps.location.search !== 'undefined' && prevProps.location.search !== '' &&
+                (typeof this.props.location.search === 'undefined' || this.props.location.search === '')) {
+                this.setState({...this.getDefaultState(), validation_state: DataPage.getDefaultValidationState()});
+            }
+
+    }
+
+    getDefaultState() {
+        let state = this.state;
+        state = {
+            ...state,
+            budget: "4000",
+            start: "10/08/1989",
+            days: "21",
+            origin: "",
+        };
+        const today = new Date();
+        const months = ["01", "02", "03", "06", "05", "06", "07", "08", "09", "10", "11", "12"];
+        today.setDate(today.getDate() + 30);
+        state.start = today.getFullYear() + '-' + months[today.getMonth()] + '-' + today.getDate();
+        return state;
+    }
 
     componentDidMount() {
         this.data_requester.getAllSettings()
@@ -62,7 +81,7 @@ class DataPage extends Component {
             .then(settings => {
                 this.data_requester.getAllActivities().then(activities => {
                     Object.values(activities).forEach(activity => {
-                        activity.value = settings.activity_value_init;
+                        activity.value = parseInt(settings.activity_value_init, 10);
                     });
                     this.setState({...settings, activities});
                 });
@@ -89,6 +108,11 @@ class DataPage extends Component {
             if (typeof this.state[key] === 'undefined' || this.state[key] === "" || (Array.isArray(this.state[key]) && this.state[key].length === 0)) {
                 is_valid = false;
                 validation_state[key] = "error";
+                scrollToComponent(this, {
+                    offset: -100, //height of header
+                    align: 'top',
+                    duration: 100
+                });
             }
         });
         if (!is_valid) {
@@ -119,7 +143,7 @@ class DataPage extends Component {
                         <AsyncSelectInput value={this.state.origin} name={"origin"} onChange={this.onFieldChange}
                                           label={"From"} promise={this.data_requester.getAirportAutocompleteOptions}
                                           validation_state={this.state.validation_state.origin}/>
-                        <TextInput value={this.state.start} type={"text"} name={"start"}
+                        <TextInput value={this.state.start} type={"date"} name={"start"}
                                    onChange={this.onFieldChange}
                                    label={"Start"}
                                    validation_state={this.state.validation_state.start}/>

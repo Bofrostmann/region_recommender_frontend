@@ -113,13 +113,12 @@ class RegionMap extends Component {
         if (typeof this.state.main_region !== 'undefined') {
             layer.bindTooltip(feature.properties.u_name, {sticky: true});
             feature.is_selected = this.state.selected_regions.includes(feature.properties.u_name);
-            layer.className = 'test' + feature.properties.u_name;
             this.state.main_region.insertLayer(feature, layer);
 
             const onMouseEnter = event => {
                 this.mouseEnterAtZoom(event.target);
             };
-            const onMouseLeave = event => {
+            const onMouseLeave = () => {
                 this.mouseLeaveAtZoom();
             };
             layer.on({
@@ -188,22 +187,6 @@ RegionMap.defaultProps = {
     min_zoom: 1,
     max_zoom: 13
 };
-
-function getTargetsLayerGroupAtZoom(layer, zoomLevel, hierarchieNode) {
-    if (hierarchieNode.layerGroup.hasLayer(layer)) {
-        if (!('subregions' in hierarchieNode) || zoomLevel <= hierarchieNode.max_zoom_level || hierarchieNode.is_recommender_region) {
-            // in leaf, or intermediate node is okay for zoomLevel
-            return hierarchieNode.layerGroup;
-        } else {
-            for (var i in hierarchieNode.subregions) {
-                var layerGroup = getTargetsLayerGroupAtZoom(layer, zoomLevel, hierarchieNode.subregions[i]);
-                if (layerGroup)
-                    return layerGroup;
-            }
-        }
-    }
-    return null;
-}
 
 const getHoverStyle = is_selected => ({
     weight: 1,

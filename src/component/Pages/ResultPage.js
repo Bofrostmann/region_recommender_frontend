@@ -35,6 +35,8 @@ class ResultPage extends Component {
         //start both requests async, since they don't depend on each other
         data_requester.getRecommendations(QueryStringParser(query_string))
             .then(results => {
+                // sometimes we reach this, after the component has been unmounted (user clicked on the header link, etc.).
+                // To avoid the react warning, see: https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
                 results.forEach(result => {
                     result.image_url = process.env.PUBLIC_URL + '/media/region_images/' + result.region.key + '.jpg';
                     imageExists(result.image_url, exists => {

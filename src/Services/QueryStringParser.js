@@ -4,9 +4,8 @@
 
 
 import queryString from "query-string";
-import {DataRequester} from "../common/DataRequester";
 
-export default function(query_string, airports) {
+export default function(query_string) {
     const query = queryString.parse(query_string);
     query.activities = JSON.parse(query.activities);
     return {

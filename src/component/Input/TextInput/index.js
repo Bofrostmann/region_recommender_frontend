@@ -4,8 +4,6 @@
 
 import React, {Component} from 'react';
 import PropTypes from "prop-types";
-import {FormControl} from "react-bootstrap";
-import InputWrapper from "../InputWrapper/index";
 import Presentational from "./Presentational";
 
 

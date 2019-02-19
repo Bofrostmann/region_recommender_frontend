@@ -11,6 +11,7 @@
     "rc-slider": "^8.6.3",
     "react": "^16.5.2",
     "react-bootstrap": "^0.32.4",
+    "react-bootstrap-date-picker": "^5.1.0",
     "react-dom": "^16.5.2",
     "react-emotion": "latest",
     "react-leaflet": "^2.0.1",

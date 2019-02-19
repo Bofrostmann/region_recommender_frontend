@@ -10,10 +10,6 @@ import "./InputWrapper.css"
 
 
 class InputWrapper extends Component {
-    constructor(props) {
-        super(props);
-    };
-
     render() {
         return (
             <FormGroup

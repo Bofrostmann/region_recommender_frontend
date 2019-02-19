@@ -13,7 +13,6 @@ export class DataRequester {
     getAllActivities() {
         return axios.get(this.api_base_path + '/activeActivities')
             .then(response => {
-                console.log("respü", response);
                 return response.data;
             });
     };
@@ -25,7 +24,6 @@ export class DataRequester {
         }
         return axios.post(this.api_base_path + '/recommendations', settings).then(response => {
             localStorage.setItem('token', response.data.token);
-            console.log("recommendations", response.data.result);
             return response.data.result;
         });
     };
