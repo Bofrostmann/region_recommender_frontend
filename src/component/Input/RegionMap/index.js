@@ -153,7 +153,8 @@ class RegionMap extends Component {
                                '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
                                'Layer data © <a href="http://naturalearthdata.com/">Natural Earth</a>, ' +
                                'Imagery © <a href="http://mapbox.com">Mapbox</a>'}
-                               id={'sdcr.75c657b0'}/>
+                               id={'sdcr.75c657b0'}
+                               noWrap={false}/>
                     <GeoJSON data={REGION_GEOMETRY} onEachFeature={this.onEachFeature} style={style} ref={this.mapRef}/>
                 </Map>
                 <label>

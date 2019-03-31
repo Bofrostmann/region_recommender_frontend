@@ -92,7 +92,7 @@ class ResultPage extends Component {
                             {this.state.results.map((data, i) => {
                                 return <ResultItem duration={data.duration} cost_stay={data.region.price}
                                                    flight={data.flight}
-                                                   region={data.region.name} total={data.total} key={'trip_' + i}
+                                                   region={(i + 1).toString() + '. ' + data.region.name} total={data.total} key={'trip_' + i}
                                                    feedback_questions={this.state.feedback_questions}
                                                    image_url={data.image_url}
                                                    result_id={data.result_id}

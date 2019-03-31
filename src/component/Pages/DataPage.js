@@ -142,18 +142,22 @@ class DataPage extends Component {
                     <div className={"data_group standard use_box_shadow"}>
                         <AsyncSelectInput value={this.state.origin} name={"origin"} onChange={this.onFieldChange}
                                           label={"From"} promise={this.data_requester.getAirportAutocompleteOptions}
-                                          validation_state={this.state.validation_state.origin}/>
+                                          validation_state={this.state.validation_state.origin}
+                                          placeholder={"Please enter airport...."}/>
                         <TextInput value={this.state.start} type={"date"} name={"start"}
                                    onChange={this.onFieldChange}
+                                   placeholder={"DD.MM.YYYY"}
                                    label={"Start"}
                                    validation_state={this.state.validation_state.start}/>
                         <TextInput value={this.state.budget} type={"number"} name={"budget"}
-                                   onChange={this.onFieldChange} label={"Budget"}
-                                   validation_state={this.state.validation_state.budget}/>
+                                   onChange={this.onFieldChange} label={"Budget [€]"}
+                                   validation_state={this.state.validation_state.budget}
+                                   placeholder={"Enter number"}/>
                         <TextInput value={this.state.days} type={"number"} name={"days"}
                                    onChange={this.onFieldChange}
                                    label={"Days"}
-                                   validation_state={this.state.validation_state.days}/>
+                                   validation_state={this.state.validation_state.days}
+                                   placeholder={"Enter number"}/>
                     </div>
                     <div className={"data_group activities use_box_shadow"}>
                         {Object.values(this.state.activities).map((activity) => {

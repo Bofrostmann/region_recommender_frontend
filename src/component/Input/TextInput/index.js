@@ -31,7 +31,8 @@ class TextInput extends Component {
                             getValidationState={this.props.validation_state}
                             value={this.state.value}
                             onChange={this.onInputChange}
-                            type={this.props.type}/>
+                            type={this.props.type}
+                            placeholder={this.props.placeholder}/>
         );
     }
 }
@@ -42,11 +43,13 @@ TextInput.propTypes = {
     type: PropTypes.string,
     onChange: PropTypes.func,
     value: PropTypes.string,
-    validation_state: PropTypes.oneOf(['success', 'warning', 'error', ''])
+    validation_state: PropTypes.oneOf(['success', 'warning', 'error', '']),
+    placeholder: PropTypes.string
 };
 
 TextInput.defaultProps = {
-    validation_state: ''
+    validation_state: '',
+    placeholder: "Enter text"
 
 };
 

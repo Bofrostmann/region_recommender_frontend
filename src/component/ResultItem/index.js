@@ -77,7 +77,7 @@ class ResultItem extends Component {
             return (
 
                 <div className={"feedback_block border_box_block"}>
-                    <span className={"block_header"}>Feedback</span>
+                    <span className={"block_header"}>Please help us improve our service by providing some feedback on this recommendation:</span>
                     <form onSubmit={this.onFeebackSubmit}>
                         {this.props.feedback_questions.map(question => {
                             return (<SliderInput label={question.text}
