@@ -1,7 +1,7 @@
 # This is the DestiRec - Frontend
 First, we will start with a small setup-manual. below, you can also find the default Create React App readme.
 
-These are just some basic steps to get the DestiRec - Frontend running on an Ubuntu Server. You also have to take care of setting up the [API](www.todo.de) and installing npm, node and apache2. 
+These are just some basic steps to get the DestiRec - Frontend running on an Ubuntu Server. You also have to take care of setting up the [API](https://github.com/Bofrostmann/region_recommender_api) and installing npm, node and apache2. 
 
 In general, this is not an exact manual, but it should get you in the right direction.
 
